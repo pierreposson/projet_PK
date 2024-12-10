@@ -1,22 +1,41 @@
-name: CI
-on
+name: Deploy to GitHub Pages
+
+on:
   push:
-    branches: 
-      - gh-pages
-  pull_request:
     branches:
-      - gh-pages
+      - main  # Branche sur laquelle vous souhaitez que GitHub Actions s'exécute
+
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python"
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: \"3.9\"
+          python-version: 3.x
+
+      # Install dependencies
       - name: Install dependencies
-        run:
-            pip install -r requirements.txt 
-      - name: Run tests
-        run: pytest --cov=src
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install sphinx
+
+      # Build documentation with Sphinx
+      - name: Build Sphinx documentation
+        run: sphinx-build -b html doc/source doc/_build/html
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.3.0
+        with:
+          branch: gh-pages   # Branche sur laquelle déployer la documentation
+          folder: doc/_build/html  # Dossier contenant la documentation générée
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
