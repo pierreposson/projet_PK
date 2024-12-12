@@ -39,10 +39,9 @@ Copier le code
 coverage report
 
 ### Documentation
-La documentation du projet est générée avec Sphinx et hébergée sur GitHub Pages. Seulement après avoir essayer et recommencer de nombreuses fois, nous n'avons pas réussi à obtenir la génération de la documentation du projet sur le lien 
+La documentation du projet est générée avec Sphinx et hébergée sur GitHub Pages. Seulement après avoir essayer et recommencer de nombreuses fois, nous avons seulement réussi à obtenir une génération partielle de notre documenttion avec Sphinx.
 
 ### Actions GitHub
-
 Ce dépôt inclut un workflow qui :
 
 Exécute les tests avec pytest.
@@ -51,3 +50,6 @@ Garantit une couverture de code à 100%.
 
 ### Badge 
 ![Couverture des Tests](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue.svg)
+![Black](https://img.shields.io/badge/code%20style-black%20%2F%2F%20PEP%208-black.svg)
+
