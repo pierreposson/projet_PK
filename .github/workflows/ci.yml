@@ -1,91 +1,100 @@
-name: PK
+name: Build, Test, and Deploy Documentation
+
 on:
   push:
     branches:
-      - main  # Exécute le workflow sur les push dans la branche "main"
-  pull_request:
-    branches:
-      - main  # Exécute le workflow sur les pull requests vers "main"
+      - main
+  pull_request: {}
+
+permissions:
+  contents: write
 
 jobs:
-  setup-and-test:
-    name: Setup Environment and Run Tests
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      # Étape 1 : Vérification du code source
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Étape 2 : Configuration de Miniconda
-      - name: Setup Miniconda
+      - name: Install Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: 3.9
-          auto-update-conda: true
-          activate-environment: base
-          use-only-tar-bz2: true
+          auto-activate-base: false
 
-      # Étape 3 : Installation des dépendances manquantes
-      - name: Install dependencies
+      - name: Set up Conda environment
         run: |
-          conda activate base
-          pip install pytest pytest-cov black
+          conda init bash
+          source ~/.bashrc
+          conda create -n ci_env python=3.11 -y
+          conda activate ci_env
+          pip install --upgrade pip
+          pip install pdm==2.20.1 pre-commit
+          pdm config python.use_venv false
+          pdm install --dev
 
-      # Étape 4 : Formater le code avec Black
-      - name: Run Black code formatter
+      - name: Run pre-commit hooks
         run: |
-          conda activate base
-          black .  # Formate tout le code dans le répertoire courant
+          source ~/.bashrc
+          conda activate ci_env
+          pre-commit run -a
 
-      # Étape 5 : Exécution des tests avec couverture
       - name: Run tests with coverage
         run: |
-          conda activate base
-          pytest --cov=src tests/ --cov-report=xml
+          source ~/.bashrc
+          conda activate ci_env
+          set +e
+          pdm run pytest --cov=src --cov-report=term --cov-report=json --cov-report=html --cov-fail-under=85 > coverage_output.txt
+          TEST_EXIT_CODE=$?
+          set -e
+          echo "# Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          grep -A 15 "coverage:" coverage_output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat $GITHUB_STEP_SUMMARY
+          exit $TEST_EXIT_CODE
 
-      # Étape 6 : Upload du rapport de couverture
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml
-          fail_ci_if_error: true
-
-  build-docs:
-    name: Build and Deploy Documentation
+  build-and-deploy-docs:
+    needs: build-and-test
     runs-on: ubuntu-latest
-    needs: setup-and-test
-
+    if: github.ref == 'refs/heads/main'
     steps:
-      # Étape 1 : Vérification du code source
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Étape 2 : Configuration de Miniconda
-      - name: Setup Miniconda
+      - name: Install Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: 3.9
-          auto-update-conda: true
-          activate-environment: base
-          use-only-tar-bz2: true
+          auto-activate-base: false
 
-      # Étape 3 : Installation des dépendances pour la documentation
-      - name: Install dependencies for docs
+      - name: Set up Conda environment for documentation
         run: |
-          conda activate base
-          pip install sphinx sphinx-rtd-theme
+          conda init bash
+          source ~/.bashrc
+          conda create -n ci_env python=3.11 -y
+          conda activate ci_env
+          pip install --upgrade pip
+          pip install pdm==2.20.1
+          pdm config python.use_venv false
+          pdm install --dev
 
-      # Étape 4 : Génération de la documentation avec Sphinx
-      - name: Build Sphinx documentation
+      - name: Build documentation
         run: |
-          conda activate base
-          sphinx-build -b html doc/source doc/_build/html
+          source ~/.bashrc
+          conda activate ci_env
+          pip install sphinx
 
-      # Étape 5 : Déploiement sur GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+          if [ ! -d "docs" ]; then
+            echo "Dossier 'docs' non trouvé. Exécution de 'make sphinx_setup'..."
+            make sphinx_setup ENV=ci_env
+          fi
+
+          sphinx-apidoc -o docs/ src/ --force --separate
+          cd docs
+          pdm run make clean
+          pdm run make html
+
+      - name: Deploy documentation to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          branch: gh-pages  # Branche pour GitHub Pages
-          folder: doc/_build/html  # Dossier contenant la documentation générée
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html
