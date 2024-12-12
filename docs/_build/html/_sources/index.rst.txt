@@ -13,90 +13,32 @@ Badges
 .. image:: https://img.shields.io/badge/code%20style-black%20%2F%2F%20PEP%208-black.svg
     :target: https://black.readthedocs.io/en/stable/
 
-Fonctionnalités
----------------
+.. projet_PK documentation master file, created by
+   sphinx-quickstart on Wed Dec 12 2024.
 
-Le projet **Pendule Simple** inclut plusieurs fonctionnalités principales :
+Welcome to Pendule Simple's documentation!
+==========================================
 
-- **Simulation du Pendule Simple** : Calcul du mouvement d'un pendule simple en fonction des paramètres initiaux (longueur, angle, etc.).
-- **Tests et Couverture** : Inclut des tests unitaires complets avec du coverage, afin de garantir le bon fonctionnement du projet.
-- **Normes de Codage** : Le code respecte les standards **PEP 8**, vérifiés avec l'outil **black**.
-- **Documentation** : Documentation détaillée générée avec **Sphinx**.
-- **Badges** : Visualisation des badges pour la couverture des tests et le respect des normes de codage.
-
-Prise en Main
--------------
-
-### Prérequis
-
-Avant d'installer le projet, assurez-vous que **Python 3.8** ou une version supérieure est installé sur votre machine. Vous pouvez vérifier votre version de Python avec la commande suivante :
-
-
-D'accord ! Voici le fichier index.rst complet, prêt à être copié dans un seul fichier sans les sections Bash séparées. Ce fichier peut être directement utilisé dans votre projet Sphinx.
-
-index.rst complet
-rst
-Copier le code
-Pendule Simple Documentation
-=============================
-
-Bienvenue dans la documentation du projet **Pendule Simple**. Ce projet contient une implémentation Python d'une simulation et d'un outil d'analyse d'un pendule simple. Il respecte les bonnes pratiques de codage, inclut des tests complets et une documentation détaillée.
-
-
-Fonctionnalités
----------------
-
-Le projet **Pendule Simple** inclut plusieurs fonctionnalités principales :
-
-- **Simulation du Pendule Simple** : Calcul du mouvement d'un pendule simple en fonction des paramètres initiaux (longueur, angle, etc.).
-- **Tests et Couverture** : Inclut des tests unitaires complets avec du coverage, afin de garantir le bon fonctionnement du projet.
-- **Normes de Codage** : Le code respecte les standards **PEP 8**, vérifiés avec l'outil **black**.
-- **Documentation** : Documentation détaillée générée avec **Sphinx**, disponible ici.
-- **Badges** : Visualisation des badges pour la couverture des tests et le respect des normes de codage.
-
-Prise en Main
--------------
-
-Prérequis
----------
-
-Avant d'installer le projet, assurez-vous que **Python 3.8** ou une version supérieure est installé sur votre machine. Vous pouvez vérifier votre version de Python avec la commande suivante :
-
-python --version
-
-Installez ensuite les dépendances nécessaires à l'aide de la commande suivante :
-
-pip install -r requirements.txt
-
+This project is a Python implementation of a simulation and analysis tool for a simple pendulum.
 
 Installation
 ------------
 
-Pour installer le projet localement, utilisez **pip** en exécutant la commande suivante à partir du répertoire racine du projet :
+To install the project, ensure that Python 3.8 or higher is installed. You can then install the required dependencies using:
 
-pip install .
+pip install -r requirements.txt
 
+Usage
+-----
 
-Utilisation
------------
-
-Pour exécuter le programme principal et simuler le pendule simple, vous pouvez utiliser la commande suivante (en supposant que le script principal s'appelle `pendule.py`) :
+To run the pendulum simulation, execute the following:
 
 python main.py
 
+API Reference
+-------------
 
-Tests
------
-
-
-Les tests unitaires du projet sont situés dans le répertoire `tests/`. Vous pouvez exécuter tous les tests en utilisant **pytest** avec la commande suivante :
-
-pytest --cov=src
-
-
-Cette commande exécutera les tests et génèrera automatiquement un rapport de couverture.
-
-Pour visualiser le rapport de couverture, utilisez la commande suivante :
-
-coverage report
-
+.. automodule:: main
+   :members:
+   :undoc-members:
+   :show-inheritance:
