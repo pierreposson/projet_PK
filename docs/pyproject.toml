@@ -1,0 +1,19 @@
+[project]
+name = "Projet_PK"
+version = "0.1.0"
+description = "Pendule simple Test,Coverage,Black"
+authors = [
+    {name = "Pierre POSSON, Adrien KISS", email = "pierre.posson@estaca.eu"},
+]
+dependencies = []
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.pdm]
+distribution = true
