@@ -42,3 +42,8 @@ API Reference
    :members:
    :undoc-members:
    :show-inheritance:
+
+   .. automodule:: test_main
+   :members:
+   :undoc-members:
+   :show-inheritance:
